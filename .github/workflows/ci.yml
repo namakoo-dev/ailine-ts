@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - run: npm ci
+
+      - run: npm run typecheck
+
+      - run: npm run build
+
+      - name: Unit tests (tests/unit)
+        run: npm test
+
+      # tests/e drives a real ollama round trip plus a real LibreOffice
+      # apply through basrun-ts (GOLDEN.md section E, the probabilistic
+      # layer). CI runners have neither ollama nor LibreOffice installed,
+      # so this suite is gated behind a repository variable that is unset
+      # by default — meaning it is always skipped here and only ever runs
+      # on a machine where a developer opted in (locally: `npm run test:e`,
+      # with ollama serving qwen2.5-coder:7b and LibreOffice on PATH).
+      - name: E2E tests (tests/e — requires local ollama + LibreOffice)
+        if: ${{ vars.RUN_E2E_TESTS == 'true' }}
+        run: npm run test:e
+
+      - name: E2E tests skipped
+        if: ${{ vars.RUN_E2E_TESTS != 'true' }}
+        run: echo "::notice::tests/e skipped in CI — requires a local ollama (qwen2.5-coder:7b) + LibreOffice install. Run 'npm run test:e' locally to execute it."

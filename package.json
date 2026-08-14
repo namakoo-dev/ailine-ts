@@ -2,6 +2,7 @@
   "name": "ailine-ts",
   "version": "0.1.0",
   "description": "TypeScript port of ailine (Phase C migration experiment) — a local LLM writes LibreOffice Basic for a natural-language task, basrun applies it, and a before/after snapshot diff proves it actually changed the document.",
+  "license": "MIT",
   "type": "module",
   "private": true,
   "bin": {
