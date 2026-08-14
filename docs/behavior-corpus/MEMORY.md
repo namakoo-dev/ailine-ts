@@ -1,9 +1,9 @@
 # library-ailine — B棚（言語中立の挙動コーパス）
 
-移行実験第二弾 Phase A の成果物。ソース `C:\Dev\ailine`（公開名 ailine、Python 製・自然言語のタスクをローカル LLM が
+移行実験第二弾 Phase A の成果物。ソース = [ailine](https://github.com/namakoo-dev/ailine) の手元作業コピー（Python 製・自然言語のタスクをローカル LLM が
 LibreOffice Basic に書き起こし、[basrun](https://github.com/namakoo-dev/basrun) で文書に適用し、効果を読み戻して検証するツール）から、
 **Python ソースを一切見ずに TypeScript 版を実装するための橋**として建設。ソースは読み取り専用
-（`git -C C:\Dev\ailine status --porcelain` は変更ゼロのまま）。
+（作業コピーでの `git status --porcelain` は変更ゼロのまま）。
 
 第一弾（library-basrun）との違い: ailine の中核価値は**ローカル LLM が絡む確率的な挙動**（自然文→Basic コード生成）であり、
 決定論的 pass/fail だけでは書けない。そのため本棚は GOLDEN.md を決定論型（A〜D）と成功率型（E）に分離し、
@@ -61,6 +61,6 @@ CROSSING.md には basrun には無かった第四分類「資産（移植不要
 
 ## 検証環境
 
-- `python -m pytest tests --collect-only -q`（`C:\Dev\ailine` にて）: 20 件収集を確認。
-- `git -C C:\Dev\ailine status --porcelain`: 空（本作業を通じてソース無変更）。
-- `diff` によるバイト一致確認: `golden/01_value_format.bas` / `02_new_sheet.bas` / `05_cell_color.bas` / `AiLineHelpers.bas` の4ファイルが、それぞれのソース（`C:\Dev\ailine\refs\*` / `helpers\AiLineHelpers.bas`）と完全一致。
+- `python -m pytest tests --collect-only -q`（ailine の作業コピーにて）: 20 件収集を確認。
+- `git status --porcelain`（同上）: 空（本作業を通じてソース無変更）。
+- `diff` によるバイト一致確認: `golden/01_value_format.bas` / `02_new_sheet.bas` / `05_cell_color.bas` / `AiLineHelpers.bas` の4ファイルが、それぞれのソース（`ailine/refs/*` / `helpers/AiLineHelpers.bas`）と完全一致。

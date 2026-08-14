@@ -18,7 +18,7 @@ export interface LoadedHelpers {
  * time. That is why this one returns file paths as well as text, and why the
  * catalog carries a hard "don't copy the body, just Call it" prohibition.
  *
- * ★ Why this exists at all (nodes/load-helpers.md ②, session 705c3265
+ * ★ Why this exists at all (nodes/load-helpers.md ②, internal session log,
  * 2026-08-10 04:49-05:29): few-shot alone lifted the weak tasks 0% -> 67%,
  * but 7B kept flipping SortByColumn's ContainsHeader. It picked the right API
  * and then lost a single boolean — a judgment slip, not a knowledge gap, and

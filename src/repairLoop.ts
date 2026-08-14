@@ -43,7 +43,7 @@ export interface RunResult {
  * The three repair messages, one per failure mode.
  *
  * ★ These three were not designed up front — they were found, separately, in
- * a live demo (nodes/repair-loop.md ②, session 705c3265 2026-08-10
+ * a live demo (nodes/repair-loop.md ②, internal session log, 2026-08-10
  * 05:02-05:06). Keeping them distinct is a REQUIREMENT in CROSSING.md, not a
  * nicety: a bad signature, a runtime error and a no-op need different things
  * said back to the model.

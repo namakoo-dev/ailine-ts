@@ -30,7 +30,7 @@ export interface Snapshot {
  * snapshot (い — 構造は渡るが再設計要, CROSSING.md). The no-op guard's eye.
  *
  * ★★ The nine axes below are a REQUIREMENT, not a design choice. From
- * nodes/snapshot.md ② (session 705c3265, 2026-08-10 06:07): during a live
+ * nodes/snapshot.md ② (internal session log, 2026-08-10 06:07): during a live
  * demo, a border + column-width task ran correctly — the model called the
  * right helper, the helper worked, LibreOffice really had changed — and the
  * no-op guard reported "変化なし" anyway, because snapshot only recorded

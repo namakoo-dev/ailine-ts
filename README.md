@@ -1,9 +1,14 @@
 # ailine-ts
 
-TypeScript port of `ailine` — describe what you want done to a spreadsheet in
-plain Japanese, a **local** LLM writes the LibreOffice Basic for it,
-[`basrun`](https://github.com/namakoo-dev/basrun) applies it, and the document
-is read back before and after to prove the macro actually did something.
+TypeScript port of [ailine](https://github.com/namakoo-dev/ailine): describe what you
+want done to a spreadsheet in plain Japanese, a **local** LLM writes the LibreOffice
+Basic for it, [basrun-ts](https://github.com/namakoo-dev/basrun-ts) applies it, and the
+document is read back before and after to prove the macro actually did something.
+
+Like its sibling basrun-ts, this port was **written without reading the Python
+original's source**, from the behavior corpus in `docs/behavior-corpus/` alone
+(details in Provenance below). The port exceeded the original's test coverage and
+surfaced two real defects along the way, both documented honestly in this README.
 
 Nothing leaves the machine. The model runs under `ollama` on localhost.
 
@@ -161,11 +166,13 @@ only that each row can succeed at all.
 
 ## Provenance
 
-Phase C artifact of a migration experiment: written entirely from
-`library-ailine` — a language-neutral behavior corpus of node docs, a golden
-characterization table and fixtures — without reading the Python original's
-source. Source comments point back to specific nodes (`nodes/<name>.md`)
-rather than re-explaining the "why" inline.
+Phase C artifact of a migration experiment: written entirely from a language-neutral
+behavior corpus (node docs, a golden characterization table, fixtures), shipped in this
+repo as `docs/behavior-corpus/`, without reading the Python original's source.
+Source comments point back to specific corpus nodes (`nodes/<name>.md`)
+rather than re-explaining the "why" inline. The classification headline: this layer has
+**zero platform-coupled units** because all UNO coupling was already absorbed one layer
+down in basrun. Layered architecture localizes migration cost per layer.
 
 `refs/*.bas` and `helpers/AiLineHelpers.bas` are byte-for-byte copies of the
 originals, not ports. They are Basic; they run inside LibreOffice; changing
@@ -173,5 +180,18 @@ the host language from Python to TypeScript gives no reason to touch a line of
 them.
 
 `basrun-ts` is a dependency, invoked as a subprocess. This project contains no
-UNO code at all — that coupling lives one layer down, which is what made this
+UNO code at all; that coupling lives one layer down, which is what made this
 port possible without any LibreOffice knowledge.
+
+The Python [ailine](https://github.com/namakoo-dev/ailine) remains canonical; the two
+are maintained independently. Note for local runs: `npm run test:e` without a live
+ollama fails red rather than skipping cleanly (known rough edge; CI never runs it).
+
+Two names appear in this project's history: **Namakoo** ([namakoo-dev](https://github.com/namakoo-dev))
+is the human maintainer of the original and of this org; **Nagi**, the git author on these
+commits, is the implementing agent. Mentions of "Namakoo" inside `docs/behavior-corpus/`
+refer to the human. The corpus itself is in Japanese — a working document shipped as-is.
+
+## License
+
+MIT.

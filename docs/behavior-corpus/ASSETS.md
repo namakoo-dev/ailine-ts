@@ -21,14 +21,14 @@ ailine 側の実装言語（Python → TS）に依存しない。**Basic のコ�
 
 - **役割**: LLM に毎回・無条件で守らせる制約の全文。`Option VBASupport 1`/`Option Explicit` の強制、`Sub Run(oDoc As Object)` という唯一の署名、`ThisComponent` 禁止、0起点セルアクセス、数値書式の `queryKey`/`addNew` パターン、列を文字で指すな、の6項目。
 - **依存**: 無し（自己完結した文字列定数）。ただし内容は basrun 側の apply-script-contract ノード（library-basrun。`ThisComponent` 禁止の直接の理由）と `refs/01_value_format.bas`（列番号の罠の直接の理由）を前提知識として要約している。
-- **出典**: `C:\Dev\ailine\ailine.py:66-76`
+- **出典**: `ailine/ailine.py:66-76`
 - **TS 移植時の扱い**: 文字列をそのまま TS 側の定数として持ち越す。**内容を Basic の知識に基づいて書き換える必要はゼロ**（プロンプトの受け手は常に同じ Basic インタプリタ）。
 
 ## A2. ヘルパカタログ指示文（呼び方の警告＋使用例11本）
 
 - **役割**: 「ヘルパは呼ぶだけ・書き写すな・`Call` 必須」という強い禁止と、自然文タスク→ヘルパ呼び出しの対応例11本（例: 「金額で降順に並べ替え」→ `Call SortByColumn(oDoc, 1, False)`）。[[load-helpers]] のノードが実装するロジックの中の**固定テキスト部分**。
 - **依存**: A6（`helpers/AiLineHelpers.bas`）の関数シグネチャと1対1対応。ヘルパを増減したら、この使用例リストも同時に更新する必要がある（現状はコード内にハードコードされており、機械的な同期保証は無い ── ★ TS 移植時の改善候補: シグネチャから使用例を自動生成する等）。
-- **出典**: `C:\Dev\ailine\ailine.py:123-142`
+- **出典**: `ailine/ailine.py:123-142`
 
 ## A3〜A5. `refs/*.bas`（few-shot 参照例）
 
@@ -39,7 +39,7 @@ ailine 側の実装言語（Python → TS）に依存しない。**Basic のコ�
 | `05_cell_color.bas` | 条件付き背景色 `CellBackColor` | 色は必ず `&HRRGGBB&` 16進リテラルで。`RGB()` は `VBASupport 1` 下で BGR になり赤と青が入れ替わる（実測で確認済みの罠） |
 
 - **依存**: A1（CONTRACT）が「この3例は正しい書き方の参考」と前置きして渡す。ファイル自体は独立して動作する（basrun で個別に動作検証可能）。
-- **出典**: `C:\Dev\ailine\refs\01_value_format.bas` / `02_new_sheet.bas` / `05_cell_color.bas`（全文は各ファイル）
+- **出典**: `ailine/refs/01_value_format.bas` / `02_new_sheet.bas` / `05_cell_color.bas`（全文は各ファイル）
 - **運用ルール（README 明記）**: 「追加する参照は、必ず basrun で動作検証してから置くこと。動かない例は few-shot を毒する」── これは資産の**追加手順**そのものであり、TS 版でも同じ運用ルールを維持すべき（ここは移植でなく継承すべき「作り方」の資産）。
 - **TS 移植時の扱い**: ファイルをそのままコピーするだけ。中身を書き換える理由が無い。
 
@@ -64,7 +64,7 @@ ailine 側の実装言語（Python → TS）に依存しない。**Basic のコ�
 | `BoldRange`（内部・カタログに載らない） | セル範囲へ3種の CharWeight を当てる共通処理 | `StyleBold`/`SummaryTable` から呼ばれる |
 
 - **依存**: [[basrun-apply-invocation]] が生成コードと同じ `src/` ディレクトリへ毎回コピーする（basrun 経由で同一ライブラリとして LibreOffice に同期される）。
-- **出典**: `C:\Dev\ailine\helpers\AiLineHelpers.bas`（全 434 行）
+- **出典**: `ailine/helpers/AiLineHelpers.bas`（全 434 行）
 - **一次資料（設計の転換点）**: `SortByColumn` の `ContainsHeader` 取り違えが few-shot だけでは直らなかった実測（internal session log, 2026-08-10 04:49-05:29）が、この「呼ぶだけヘルパ」方式そのものの発端。`StyleBold`/`SummaryTable` の native 太字対応は internal session log, 2026-08-11 00:38-00:51（当初「環境不可」と誤断していたものを Namakoo の「後付け以外に本当に方法は？」という押しで訂正した経緯つき ── memory `project_basrun_ai_line.md` にも記録）。
 - **TS 移植時の扱い**: ファイルをそのままコピーするだけ。**11+1 個の Sub の中身は Basic のまま**、TS 側は「同じライブラリへ同梱コピーして `Call` させる」という配線（[[basrun-apply-invocation]] の構造）だけを再実装すればよい。
 
@@ -78,4 +78,4 @@ ailine 側の実装言語（Python → TS）に依存しない。**Basic のコ�
 
 - **役割**: pytest には使われない（pytest は `tmp_path` 上で `openpyxl` により最小構成を都度生成 ── `tests/test_ailine.py` の `_book()` ヘルパ参照）。**人間が CLI を手で叩いて試す時の題材**として README のコマンド例が直接参照する。
 - **性質**: 資産ではあるが「そのまま運ぶ」対象というより「開発者体験を保つための添付データ」に近い。移植時は同等の意味を持つ最小デモファイルを TS 側でも用意すればよく、内容の一致自体には強い意味は無い（低優先度の資産）。
-- **出典**: `C:\Dev\ailine\demo\sample.xlsx` / `sales.xlsx` / `lookup.xlsx`
+- **出典**: `ailine/demo/sample.xlsx` / `sales.xlsx` / `lookup.xlsx`
