@@ -1,0 +1,29 @@
+{
+  "name": "ailine-ts",
+  "version": "0.1.0",
+  "description": "TypeScript port of ailine (Phase C migration experiment) — a local LLM writes LibreOffice Basic for a natural-language task, basrun applies it, and a before/after snapshot diff proves it actually changed the document.",
+  "type": "module",
+  "private": true,
+  "bin": {
+    "ailine": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run tests/unit",
+    "test:e": "vitest run tests/e",
+    "test:all": "vitest run tests"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "exceljs": "^4.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}
